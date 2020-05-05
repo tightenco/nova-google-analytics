@@ -24,7 +24,7 @@ class ToolServiceProvider extends ServiceProvider
         });
 
         Nova::serving(function (ServingNova $event) {
-            //
+            Nova::script('nova-google-analytics-tools', __DIR__.'/../dist/js/tool.js');
         });
     }
 

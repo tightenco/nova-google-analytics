@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Tightenco\NovaGoogleAnalytics\Http\Controllers\MostVisitedPagesController;
 use Tightenco\NovaGoogleAnalytics\Http\Controllers\ReferrerListController;
+use Tightenco\NovaGoogleAnalytics\Http\Controllers\StatsPerPageController;
 
 /*
 |--------------------------------------------------------------------------
@@ -18,3 +19,4 @@ use Tightenco\NovaGoogleAnalytics\Http\Controllers\ReferrerListController;
 
 Route::get('most-visited-pages', MostVisitedPagesController::class);
 Route::get('referrer-list', ReferrerListController::class);
+Route::post('stats-per-page', StatsPerPageController::class);

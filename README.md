@@ -25,7 +25,21 @@ You can install the package in to a Laravel app that uses [Nova](https://nova.la
 composer require tightenco/nova-google-analytics
 ```
 
-Next up, you must register the card with Nova. This is typically done in the `cards` method of the `NovaServiceProvider`.
+Under the hood this package uses Spatie's Laravel Google Analytics package. Follow the instructions on [Spatie's Laravel Google Analytics package](https://github.com/spatie/laravel-analytics) for getting your credentials, then put them here:
+
+```
+yourapp/storage/app/analytics/service-account-credentials.json
+```
+
+Also add this to the `.env` for your Nova app:
+
+```ini
+ANALYTICS_VIEW_ID=
+```
+
+## Usage
+
+Register the card with Nova. This is typically done in the `cards` method of the `NovaServiceProvider`.
 
 ```php
 // in app/Providers/NovaServiceProvider.php
@@ -43,19 +57,30 @@ public function cards()
 }
 ```
 
-For now, follow the directions on [Spatie's Laravel Google Analytics package](https://github.com/spatie/laravel-analytics) for getting your credentials, then put them here:
+#### Stats for a single resource
+
+![Preview](https://i.imgur.com/XpLe1g1.png)
+
+To enable stats for a specific model, you'll need to add the tool to that model's Nova resource. Make sure to specify the class name so the resource tool can load it properly. 
+
+Replace `_PATH_` with appropriate path for your model
 
 ```
-yourapp/storage/app/analytics/service-account-credentials.json
+use Tightenco\NovaGoogleAnalytics\StatsPerPage;
+
+// ...
+
+public function fields()
+{
+    return [
+        StatsPerPage::make()->path(_PATH_),
+        
+        // ...
+    ];
+}
 ```
-
-Also add this to the `.env` for your Nova app:
-
-```ini
-ANALYTICS_VIEW_ID=
-```
-
-### Security
+**Example:** If your url scheme looks like `'https://domain.com/posts/123/post-slug'` provided path should be `'/posts/123/post-slug'`
+## Security
 
 If you discover any security related issues, please email matt@tighten.co instead of using the issue tracker.
 
