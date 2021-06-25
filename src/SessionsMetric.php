@@ -9,10 +9,11 @@ use Laravel\Nova\Metrics\Value;
 use Spatie\Analytics\Analytics;
 use Spatie\Analytics\Period;
 
-class VisitorsMetric extends Value
+class SessionsMetric extends Value
 {
-    public function name() {
-        return __('Visitors');
+    public function name()
+    {
+        return __('Sessions');
     }
 
     /**
@@ -24,51 +25,61 @@ class VisitorsMetric extends Value
     public function calculate(Request $request)
     {
         $lookups = [
-            1 => $this->visitorsOneDay(),
-            'MTD' => $this->visitorsOneMonth(),
-            'YTD' => $this->visitorsOneYear(),
+            1 => $this->sessionsOneDay(),
+            'MTD' => $this->sessionsOneMonth(),
+            'YTD' => $this->sessionsOneYear(),
         ];
 
         $data = Arr::get($lookups, $request->get('range'), ['result' => 0, 'previous' => 0]);
 
-        return $this->result($data['result'])
-                    ->previous($data['previous']);
+        return $this
+            ->result($data['result'])
+            ->previous($data['previous']);
     }
 
-    private function visitorsOneDay()
+    private function sessionsOneDay()
     {
         $analyticsData = app(Analytics::class)
-            ->fetchTotalVisitorsAndPageViews(Period::days(1));
+            ->performQuery(
+                Period::days(1),
+                'ga:sessions',
+                [
+                    'metrics' => 'ga:sessions',
+                    'dimensions' => 'ga:date',
+                ]
+            );
+
+        $results = collect($analyticsData->getRows());
 
         return [
-            'result' => $analyticsData->last()['visitors'] ?? 0,
-            'previous' => $analyticsData->first()['visitors'] ?? 0,
+            'result' => $results->last()[1] ?? 0,
+            'previous' => $results->first()[1] ?? 0,
         ];
     }
 
-    private function visitorsOneMonth()
+    private function sessionsOneMonth()
     {
-        // First get the results for the current month to date.
         $currentAnalyticsData = app(Analytics::class)->performQuery(
             Period::create(Carbon::today()->startOfMonth(), Carbon::today()),
-            'ga:users',
+            'ga:sessions',
             [
-                'metrics' => 'ga:users',
+                'metrics' => 'ga:sessions',
                 'dimensions' => 'ga:yearMonth',
             ]
         );
+
         $currentResults = collect($currentAnalyticsData->getRows());
 
-        // Then get the total results of last month to compare.
         $lastMonth = Carbon::today()->startOfMonth()->subMonths(1);
         $previousAnalyticsData = app(Analytics::class)->performQuery(
             Period::create($lastMonth->startOfMonth(), $lastMonth->endOfMonth()),
-            'ga:users',
+            'ga:sessions',
             [
-                'metrics' => 'ga:users',
+                'metrics' => 'ga:sessions',
                 'dimensions' => 'ga:yearMonth',
             ]
         );
+
         $previousResults = collect($previousAnalyticsData->getRows());
 
         return [
@@ -77,31 +88,30 @@ class VisitorsMetric extends Value
         ];
     }
 
-    private function visitorsOneYear()
+    private function sessionsOneYear()
     {
-        // First get the results for the current year to date.
         $currentAnalyticsData = app(Analytics::class)->performQuery(
             Period::create(Carbon::today()->startOfYear(), Carbon::today()),
-            'ga:users',
+            'ga:sessions',
             [
-                'metrics' => 'ga:users',
+                'metrics' => 'ga:sessions',
                 'dimensions' => 'ga:year',
             ]
         );
+
         $currentResults = collect($currentAnalyticsData->getRows());
 
-        // Then get the total results of last month to compare.
         $lastYear = Carbon::today()->startOfYear()->subYears(1);
         $previousAnalyticsData = app(Analytics::class)->performQuery(
             Period::create($lastYear->startOfYear(), $lastYear->endOfYear()),
-            'ga:users',
+            'ga:sessions',
             [
-                'metrics' => 'ga:users',
+                'metrics' => 'ga:sessions',
                 'dimensions' => 'ga:year',
             ]
         );
-        $previousResults = collect($previousAnalyticsData->getRows());
 
+        $previousResults = collect($previousAnalyticsData->getRows());
 
         return [
             'previous' => $previousResults->last()[1] ?? 0,
@@ -118,12 +128,12 @@ class VisitorsMetric extends Value
     {
         return [
             1 => __('Today'),
-            // 30 => '30 Days',
-            // 60 => '60 Days',
-            // 365 => '365 Days',
             'MTD' => __('Month To Date'),
-            // 'QTD' => 'Quarter To Date',
+            // 60 => '60 Days',
             'YTD' => __('Year To Date'),
+            // 'MTD' => 'Month To Date',
+            // 'QTD' => 'Quarter To Date',
+            // 'YTD' => 'Year To Date',
         ];
     }
 
@@ -134,7 +144,7 @@ class VisitorsMetric extends Value
      */
     public function cacheFor()
     {
-         return now()->addMinutes(30);
+        return now()->addMinutes(30);
     }
 
     /**
@@ -144,6 +154,6 @@ class VisitorsMetric extends Value
      */
     public function uriKey()
     {
-        return 'visitors';
+        return 'sessions';
     }
 }

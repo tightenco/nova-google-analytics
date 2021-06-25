@@ -14,8 +14,8 @@ class Tool extends BaseTool
      */
     public function boot()
     {
-        Nova::script('nova-google-analytics', __DIR__.'/../dist/js/tool.js');
-        Nova::style('nova-google-analytics', __DIR__.'/../dist/css/tool.css');
+        Nova::script('nova-google-analytics', __DIR__ . '/../dist/js/tool.js');
+        Nova::style('nova-google-analytics', __DIR__ . '/../dist/css/tool.css');
     }
 
     /**

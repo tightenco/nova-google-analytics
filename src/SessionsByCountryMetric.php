@@ -30,8 +30,8 @@ class SessionsByCountryMetric extends Partition
                     'metrics' => 'ga:sessions',
                     'dimensions' => 'ga:country',
                     'sort' => '-ga:sessions',
-                    'max-results' => 5
-                ]
+                    'max-results' => 5,
+                ],
             );
 
         $rows = collect($analyticsData->getRows());

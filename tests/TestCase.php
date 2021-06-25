@@ -5,12 +5,11 @@ namespace Tightenco\NovaGoogleAnalytics\Tests;
 use Illuminate\Foundation\Bootstrap\LoadEnvironmentVariables;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Facades\Storage;
 use Orchestra\Testbench\TestCase as Orchestra;
-use Tightenco\NovaGoogleAnalytics\CardServiceProvider;
-use Tightenco\NovaGoogleAnalytics\ToolServiceProvider;
 use Spatie\Analytics\AnalyticsFacade;
 use Spatie\Analytics\AnalyticsServiceProvider;
+use Tightenco\NovaGoogleAnalytics\CardServiceProvider;
+use Tightenco\NovaGoogleAnalytics\ToolServiceProvider;
 
 abstract class TestCase extends Orchestra
 {

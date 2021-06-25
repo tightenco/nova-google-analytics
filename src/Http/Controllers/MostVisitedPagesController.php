@@ -3,7 +3,6 @@
 namespace Tightenco\NovaGoogleAnalytics\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Tightenco\NovaGoogleAnalytics\File;
 use Illuminate\Routing\Controller;
 use Spatie\Analytics\Analytics;
 use Spatie\Analytics\Period;

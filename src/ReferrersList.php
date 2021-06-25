@@ -2,12 +2,7 @@
 
 namespace Tightenco\NovaGoogleAnalytics;
 
-use Carbon\Carbon;
-use Illuminate\Http\Request;
-use Spatie\Analytics\Analytics;
 use Laravel\Nova\Card;
-use Spatie\Analytics\Period;
-use Laravel\Nova\Metrics\Value;
 
 class ReferrersList extends Card
 {
